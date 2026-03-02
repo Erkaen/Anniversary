@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untuk Kesayanganku - Happy 2nd Anniversary</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Quicksand:wght@300;400;600&family=Alex+Brush&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================= TEMA & WARNA ================= */
+        :root {
+            --lilac: #D4B2D8;
+            --lilac-dark: #A584A9;
+            --cream: #FAF7F2;
+            --text-main: #4A404A;
+            --text-muted: #827882;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--cream);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 500; }
+
+        .btn {
+            padding: 12px 35px;
+            font-size: 1.1rem; font-family: 'Quicksand', sans-serif; font-weight: 600;
+            color: white; border: none; border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
+        }
+
+        /* ================= LAYAR PEMBUKA & KUIS ================= */
+        #welcome-screen, #quiz-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000; transition: opacity 1s ease;
+        }
+        #welcome-screen { background-color: var(--cream); }
+        #welcome-screen h1 { font-family: 'Alex Brush', cursive; font-size: 4rem; color: var(--lilac-dark); margin-bottom: 20px; }
+        .open-btn { background-color: var(--lilac); animation: pulse 2s infinite; }
+        
+        #quiz-screen { background-color: var(--lilac-dark); color: white; display: none; text-align: center; padding: 20px; z-index: 999; }
+        .btn-group { margin-top: 30px; display: flex; gap: 20px; }
+        #yesBtn { background-color: white; color: var(--lilac-dark); }
+        #noBtn { background-color: transparent; border: 2px solid white; position: relative; }
+
+        /* ================= POHON CINTA & TIMER ================= */
+        .tree-timer-section {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 60px 20px; min-height: 100vh; text-align: center;
+        }
+        canvas { display: block; margin: 0 auto; max-width: 100%; }
+        
+        .timer-box { display: flex; justify-content: center; gap: 15px; font-family: 'Playfair Display', serif; margin-top: 20px; z-index: 10; }
+        .time-unit { background: white; padding: 10px 15px; border-radius: 10px; box-shadow: 0 5px 15px rgba(212, 178, 216, 0.3); min-width: 70px;}
+        .time-val { font-size: 2rem; color: var(--lilac-dark); font-weight: bold; }
+        .time-label { font-size: 0.8rem; color: var(--text-muted); font-family: 'Quicksand'; }
+
+        /* ================= CHAPTERS & GALERI GRID (TANPA TEKS) ================= */
+        .chapter-container { max-width: 1100px; margin: 0 auto; padding: 50px 20px; }
+        .chapter { margin-bottom: 100px; opacity: 0; transform: translateY(40px); transition: all 1s ease-out; }
+        .chapter.visible { opacity: 1; transform: translateY(0); }
+        .chapter-title { text-align: center; font-size: 2.5rem; color: var(--lilac-dark); margin-bottom: 5px; }
+        .chapter-subtitle { text-align: center; font-family: 'Alex Brush', cursive; font-size: 2.2rem; color: var(--text-muted); margin-bottom: 40px; }
+        
+        .gallery { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 20px; justify-items: center; 
+        }
+        .polaroid {
+            /* Padding bawah dibuat 25px agar tetap terlihat seperti polaroid asli */
+            background: white; padding: 10px 10px 25px 10px; border-radius: 4px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05); width: 100%; max-width: 250px;
+            transition: transform 0.3s ease;
+        }
+        .polaroid:nth-child(odd) { transform: rotate(-2deg); }
+        .polaroid:nth-child(even) { transform: rotate(2deg); }
+        .polaroid:hover { transform: scale(1.08) rotate(0deg); z-index: 10; box-shadow: 0 15px 30px rgba(212,178,216,0.4); }
+        .polaroid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 2px; }
+
+        .bandung-quote { background: linear-gradient(135deg, var(--lilac), var(--lilac-dark)); color: white; padding: 40px 20px; border-radius: 20px; text-align: center; margin-bottom: 40px; }
+        .bandung-quote blockquote { font-size: 1.8rem; font-style: italic; line-height: 1.5; }
+
+        /* ================= ANIMASI BIUUU HEART ================= */
+        .biu-section { text-align: center; padding: 60px 20px; min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden;}
+        #biu-container { position: relative; width: 300px; height: 300px; margin-bottom: 20px; }
+        .biu-char { position: absolute; bottom: 0; width: 100%; text-align: center; font-size: 3rem; font-weight: bold; color: var(--text-main); z-index: 5; }
+        .tiny-heart { position: absolute; color: #FF7EB3; font-size: 12px; opacity: 0; transform: scale(0); transition: all 0.5s ease; }
+        .biu-text { font-family: 'Alex Brush', cursive; color: var(--lilac-dark); font-size: 3rem; opacity: 0; transition: opacity 1s; margin-top: 20px;}
+
+        /* ================= SURAT CINTA ================= */
+        .love-letter { background: white; padding: 40px; border-radius: 15px; border-top: 5px solid var(--lilac); box-shadow: 0 10px 30px rgba(0,0,0,0.05); line-height: 1.8; font-size: 1.1rem; }
+        .lyric-highlight { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--lilac-dark); text-align: center; margin: 30px 0; font-style: italic; }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 178, 216, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(212, 178, 216, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 178, 216, 0); } }
+        
+        @media (max-width: 768px) {
+            .gallery { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .polaroid { padding: 8px 8px 20px 8px; }
+            .timer-box { flex-wrap: wrap; }
+            #biu-container { transform: scale(0.8); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop><source src="nadhif.mp3" type="audio/mpeg"></audio>
+
+    <div id="welcome-screen">
+        <h1>Untuk Kamu...</h1>
+        <p style="margin-bottom: 30px; color: var(--text-muted);">Ada sesuatu yang ingin aku tunjukkan.</p>
+        <button class="btn open-btn" id="openBtn">Buka Kejutannya 💌</button>
+    </div>
+
+    <div id="quiz-screen">
+        <h2 style="font-size: 2rem; margin-bottom: 10px;">Sebelum lanjut...</h2>
+        <p style="font-size: 1.2rem;">Janji bakal sayang terus sama aku kan?</p>
+        <div class="btn-group">
+            <button class="btn" id="yesBtn">Pasti dong! ❤️</button>
+            <button class="btn" id="noBtn">Nggak ah 😜</button>
+        </div>
+    </div>
+
+    <section class="tree-timer-section scroll-anim">
+        <h1 style="color: var(--lilac-dark); font-size: 2.5rem; margin-bottom: 10px;">Happy 2nd Anniversary</h1>
+        
+        <canvas id="treeCanvas" width="400" height="350"></canvas>
+        
+        <p style="color: var(--text-muted); margin-top: 20px;">Kita sudah bersama mengukir cerita selama:</p>
+        <div class="timer-box">
+            <div class="time-unit"><div class="time-val" id="days">00</div><div class="time-label">Hari</div></div>
+            <div class="time-unit"><div class="time-val" id="hours">00</div><div class="time-label">Jam</div></div>
+            <div class="time-unit"><div class="time-val" id="minutes">00</div><div class="time-label">Menit</div></div>
+            <div class="time-unit"><div class="time-val" id="seconds">00</div><div class="time-label">Detik</div></div>
+        </div>
+    </section>
+
+    <div class="chapter-container">
+        <section class="chapter scroll-anim">
+            <h2 class="chapter-title">Chapter I</h2>
+            <div class="chapter-subtitle">Bumi Pasundan</div>
+            <div class="bandung-quote">
+                <blockquote>"Bumi Pasundan lahir ketika Tuhan sedang tersenyum."</blockquote>
+                <p style="margin-top: 15px; font-family: 'Quicksand';">Dan senyum-Mu menular kepadaku setiap kali kita menyusuri kota ini berdua.</p>
+            </div>
+            <div class="gallery">
+                <div class="polaroid"><img src="bandung1.jpg" alt="Bandung 1"></div>
+                <div class="polaroid"><img src="bandung2.jpg" alt="Bandung 2"></div>
+                <div class="polaroid"><img src="bandung3.jpg" alt="Bandung 3"></div>
+                <div class="polaroid"><img src="bandung4.jpg" alt="Bandung 4"></div>
+                <div class="polaroid"><img src="bandung5.jpg" alt="Bandung 5"></div>
+                <div class="polaroid"><img src="bandung6.jpg" alt="Bandung 6"></div>
+                <div class="polaroid"><img src="bandung7.jpg" alt="Bandung 7"></div>
+                <div class="polaroid"><img src="bandung8.jpg" alt="Bandung 8"></div>
+                <div class="polaroid"><img src="bandung9.jpg" alt="Bandung 9"></div>
+                <div class="polaroid"><img src="bandung10.jpg" alt="Bandung 10"></div>
+                <div class="polaroid"><img src="bandung11.jpg" alt="Bandung 11"></div>
+                <div class="polaroid"><img src="bandung12.jpg" alt="Bandung 12"></div>
+            </div>
+        </section>
+
+        <section class="chapter scroll-anim">
+            <h2 class="chapter-title">Chapter II</h2>
+            <div class="chapter-subtitle">Masa Putih Abu-Abu</div>
+            <div class="gallery">
+                <div class="polaroid"><img src="sma1.jpg" alt="SMA 1"></div>
+                <div class="polaroid"><img src="sma2.jpg" alt="SMA 2"></div>
+                <div class="polaroid"><img src="sma3.jpg" alt="SMA 3"></div>
+                <div class="polaroid"><img src="sma4.jpg" alt="SMA 4"></div>
+                <div class="polaroid"><img src="sma5.jpg" alt="SMA 5"></div>
+                <div class="polaroid"><img src="sma6.jpg" alt="SMA 6"></div>
+                <div class="polaroid"><img src="sma7.jpg" alt="SMA 7"></div>
+                <div class="polaroid"><img src="sma8.jpg" alt="SMA 8"></div>
+                <div class="polaroid"><img src="sma9.jpg" alt="SMA 9"></div>
+                <div class="polaroid"><img src="sma10.jpg" alt="SMA 10"></div>
+                <div class="polaroid"><img src="sma11.jpg" alt="SMA 11"></div>
+                <div class="polaroid"><img src="sma12.jpg" alt="SMA 12"></div>
+            </div>
+        </section>
+
+        <section class="chapter scroll-anim">
+            <h2 class="chapter-title">Chapter III</h2>
+            <div class="chapter-subtitle">Melangkah Dewasa</div>
+            <div class="gallery">
+                <div class="polaroid"><img src="kuliah1.jpg" alt="Kuliah 1"></div>
+                <div class="polaroid"><img src="kuliah2.jpg" alt="Kuliah 2"></div>
+                <div class="polaroid"><img src="kuliah3.jpg" alt="Kuliah 3"></div>
+                <div class="polaroid"><img src="kuliah4.jpg" alt="Kuliah 4"></div>
+                <div class="polaroid"><img src="kuliah5.jpg" alt="Kuliah 5"></div>
+                <div class="polaroid"><img src="kuliah6.jpg" alt="Kuliah 6"></div>
+                <div class="polaroid"><img src="kuliah7.jpg" alt="Kuliah 7"></div>
+                <div class="polaroid"><img src="kuliah8.jpg" alt="Kuliah 8"></div>
+                <div class="polaroid"><img src="kuliah9.jpg" alt="Kuliah 9"></div>
+                <div class="polaroid"><img src="kuliah10.jpg" alt="Kuliah 10"></div>
+                <div class="polaroid"><img src="kuliah11.jpg" alt="Kuliah 11"></div>
+                <div class="polaroid"><img src="kuliah12.jpg" alt="Kuliah 12"></div>
+            </div>
+        </section>
+
+        <section class="chapter scroll-anim">
+            <div class="biu-section" id="biuSection">
+                <div id="biu-container">
+                    <div class="biu-char">q(❂‿❂)p</div>
+                </div>
+                <div class="biu-text" id="biuText">I Love You!</div>
+            </div>
+
+            <div class="love-letter">
+                <p>Hai Sayang!!!!,</p>
+                <p>Tidak terasa ya, kita sudah sampai di titik ini. Dari masa PDKT di bandung, melewati masa SMA yang rumit dan sampai sekarang sama-sama berjuang keras di bangku kuliah.
+                    Senang rasanya bisa melewati semua itu dengan kamu. Kamu selalu menjadi tempat aku pulang, tempat aku merasa aman, dan tempat aku bisa jadi diri sendiri tanpa takut dihakimi. Terima kasih sudah jadi bagian dari hidupku, dan terima kasih sudah memilih untuk tetap bertahan bersama aku.</p>
+                
+                <div class="lyric-highlight">
+                    "Karena bersamamu semua terasa indah...<br>
+                    Dan kota ini tak sama tanpamu."
+                </div>
+
+                <p>Semua tempat tak akan pernah sama rasanya kalau bukan kamu yang menemaniku. Terima kasih sudah jadi penjaga hatiku. Mari buat lebih banyak memori di tahun-tahun berikutnya.
+                    LOVE UUUU!!!
+                </p>
+                
+                <p style="text-align: right; margin-top: 30px; font-family: 'Alex Brush', cursive; font-size: 2.5rem; color: var(--lilac-dark);">Rakan</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 1. Logika Layar Pembuka & Kuis
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const bgMusic = document.getElementById('bgMusic');
+
+        document.getElementById('openBtn').addEventListener('click', () => {
+            bgMusic.play();
+            welcomeScreen.style.opacity = '0';
+            setTimeout(() => { welcomeScreen.style.display = 'none'; quizScreen.style.display = 'flex'; }, 1000);
+        });
+
+        const noBtn = document.getElementById('noBtn');
+        noBtn.addEventListener('mouseover', () => {
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = `${Math.random() * (window.innerWidth - 100)}px`;
+            noBtn.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
+        });
+        document.getElementById('yesBtn').addEventListener('click', () => {
+            quizScreen.style.display = 'none';
+            drawTree(); 
+        });
+
+        // 2. Timer Anniversary (JANGAN LUPA GANTI TANGGAL JADIAN DI SINI)
+        const startDate = new Date("2024-03-02T00:00:00").getTime(); 
+        setInterval(() => {
+            const now = new Date().getTime();
+            const distance = now - startDate;
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }, 1000);
+
+        // 3. Logika Pohon Cinta
+        const canvas = document.getElementById('treeCanvas');
+        const ctx = canvas.getContext('2d');
+        let treeDrawn = false;
+
+        function drawBranch(startX, startY, len, angle, branchWidth, color1, color2) {
+            ctx.beginPath();
+            ctx.strokeStyle = color1;
+            ctx.lineWidth = branchWidth;
+
+            const endX = startX + len * Math.sin(angle * Math.PI / 180);
+            const endY = startY - len * Math.cos(angle * Math.PI / 180);
+
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            if(len < 10) {
+                ctx.font = "12px Arial";
+                ctx.fillStyle = color2;
+                ctx.fillText("❤️", endX - 6, endY + 2);
+                return;
+            }
+
+            setTimeout(() => {
+                drawBranch(endX, endY, len * 0.75, angle + 25, branchWidth * 0.7, color1, color2);
+                drawBranch(endX, endY, len * 0.75, angle - 25, branchWidth * 0.7, color1, color2);
+            }, 50);
+        }
+
+        function drawTree() {
+            if(treeDrawn) return;
+            drawBranch(200, 350, 80, 0, 10, '#A584A9', '#FF7EB3');
+            treeDrawn = true;
+        }
+
+        // 4. Logika Animasi Biuuu
+        const biuContainer = document.getElementById('biu-container');
+        let biuAnimated = false;
+
+        function createBiuHeart() {
+            if(biuAnimated) return;
+            biuAnimated = true;
+            
+            const totalHearts = 50;
+            for (let i = 0; i < totalHearts; i++) {
+                setTimeout(() => {
+                    let t = i * 0.13;
+                    let x = 150 + (8 * (16 * Math.pow(Math.sin(t), 3))); 
+                    let y = 100 - (8 * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)));
+
+                    const heart = document.createElement('div');
+                    heart.classList.add('tiny-heart');
+                    heart.innerHTML = '❤️';
+                    heart.style.left = `${x}px`;
+                    heart.style.top = `${y}px`;
+                    biuContainer.appendChild(heart);
+
+                    setTimeout(() => {
+                        heart.style.opacity = '1';
+                        heart.style.transform = 'scale(1)';
+                    }, 50);
+                }, i * 60); 
+            }
+            
+            setTimeout(() => {
+                document.getElementById('biuText').style.opacity = '1';
+            }, totalHearts * 60 + 500);
+        }
+
+        // 5. Trigger Animasi
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if(entry.target.querySelector('#biuSection')) {
+                        createBiuHeart();
+                    }
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.scroll-anim').forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>
